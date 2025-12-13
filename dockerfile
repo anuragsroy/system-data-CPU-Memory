@@ -3,7 +3,7 @@ WORKDIR /app
 RUN apt update
 RUN apt install -y python3
 RUN apt install -y python3-pip
-RUN pip3 install psutil
+RUN pip3 install -y psutil
 RUN apt install -y python3-venv
 RUN python3 -m venv venv
 RUN . venv/bin/activate
