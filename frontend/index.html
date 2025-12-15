@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>System Monitoring Dashboard</title>
+
+    <!-- Chart.js CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f4f6f9;
+            padding: 20px;
+        }
+        h1 {
+            text-align: center;
+        }
+        .charts {
+            display: flex;
+            justify-content: space-around;
+            flex-wrap: wrap;
+        }
+        canvas {
+            background: white;
+            padding: 10px;
+            border-radius: 10px;
+            max-width: 400px;
+        }
+    </style>
+</head>
+<body>
+
+<h1>📊 System Resource Monitor</h1>
+
+<div class="charts">
+    <canvas id="cpuChart"></canvas>
+    <canvas id="memoryChart"></canvas>
+</div>
+
+<script>
+    const cpuData = [];
+    const labels = [];
+
+    const cpuChart = new Chart(document.getElementById("cpuChart"), {
+        type: 'bar',   // Histogram
+        data: {
+            labels: labels,
+            datasets: [{
+                label: 'CPU Usage (%)',
+                data: cpuData
+            }]
+        },
+        options: {
+            scales: {
+                y: { min: 0, max: 100 }
+            }
+        }
+    });
+
+    const memoryChart = new Chart(document.getElementById("memoryChart"), {
+        type: 'pie',
+        data: {
+            labels: ['Used Memory', 'Available Memory'],
+            datasets: [{
+                data: [0, 0]
+            }]
+        }
+    });
+
+    function fetchMetrics() {
+        fetch("http://localhost:5000/metrics")
+            .then(res => res.json())
+            .then(data => {
+                // CPU Histogram
+                if (cpuData.length > 10) {
+                    cpuData.shift();
+                    labels.shift();
+                }
+
+                cpuData.push(data.cpu_usage);
+                labels.push(new Date().toLocaleTimeString());
+                cpuChart.update();
+
+                // Memory Pie Chart
+                memoryChart.data.datasets[0].data = [
+                    data.memory.used,
+                    data.memory.available
+                ];
+                memoryChart.update();
+            });
+    }
+
+    setInterval(fetchMetrics, 2000); // refresh every 2 seconds
+</script>
+
+</body>
+</html>
