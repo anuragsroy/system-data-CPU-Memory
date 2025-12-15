@@ -9,7 +9,9 @@ pipeline {
         }
         stage('Docker image backend') {
             steps {
+                dir('backend'){
                 bat 'docker build -t python-backend-image .'
+                }
             }
         }
          stage('Docker container backend') {
