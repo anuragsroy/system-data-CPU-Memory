@@ -5,4 +5,4 @@ The codespace consists of an application that gives a visual representation of t
 
 Executing the Jenkins pipeline would run the backend in localhost:5000 and frontend in localhost:5050
 
-A webhook has been added so that any changes pushed to the repository will trigger the pipeline
+A webhook has been added so that any changes pushed to the repository will trigger the pipeline in Jenkins
